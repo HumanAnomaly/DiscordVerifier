@@ -22,6 +22,7 @@ export const config = {
   clientId: requireEnv('CLIENT_ID'),
   guildId: requireEnv('GUILD_ID'),
   verifiedRoleId: requireEnv('VERIFIED_ROLE_ID'),
+  unverifiedRoleId: process.env.UNVERIFIED_ROLE_ID?.trim() || null,
 };
 
 for (const key of ['clientId', 'guildId', 'verifiedRoleId']) {
@@ -34,4 +35,10 @@ for (const key of ['clientId', 'guildId', 'verifiedRoleId']) {
 
 if (config.token.length < 20) {
   throw new Error('Invalid DISCORD_TOKEN: value looks too short to be a real bot token.');
+}
+
+if (config.unverifiedRoleId && !isSnowflake(config.unverifiedRoleId)) {
+  throw new Error(
+    `Invalid UNVERIFIED_ROLE_ID "${config.unverifiedRoleId}". Expected a Discord snowflake (17-20 digits) or empty.`
+  );
 }

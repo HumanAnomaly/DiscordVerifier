@@ -8,7 +8,7 @@ import { config } from '../utils/config.js';
 
 export const data = new SlashCommandBuilder()
   .setName('verify-status')
-  .setDescription('Show verification health: role, permissions, hierarchy.')
+  .setDescription('Show full config and verification health check.')
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .setDMPermission(false);
 
@@ -22,37 +22,79 @@ export async function execute(interaction) {
   }
 
   const guild = interaction.guild;
-  const lines = [];
-  let color = 0x57f287;
+  const ok = [];
+  const bad = [];
+  const mark = (pass, text) => (pass ? ok.push(`✅ ${text}`) : bad.push(`❌ ${text}`));
 
+  // Config matches this bot and server.
+  mark(
+    interaction.client.user.id === config.clientId,
+    `CLIENT_ID matches this bot (${config.clientId}).`
+  );
+  mark(guild.id === config.guildId, `GUILD_ID matches this server (${config.guildId}).`);
+
+  // Roles exist.
   const role = await guild.roles.fetch(config.verifiedRoleId).catch(() => null);
-  lines.push(role ? `✅ Verified role: ${role} (\`${role.name}\`)` : '❌ Verified role not found — check VERIFIED_ROLE_ID.');
-  if (!role) color = 0xed4245;
+  mark(
+    !!role,
+    role
+      ? `VERIFIED_ROLE_ID: ${role} (${role.name}).`
+      : `VERIFIED_ROLE_ID ${config.verifiedRoleId} not found.`
+  );
 
+  const urole = config.unverifiedRoleId
+    ? await guild.roles.fetch(config.unverifiedRoleId).catch(() => null)
+    : null;
+  if (config.unverifiedRoleId) {
+    mark(
+      !!urole,
+      urole
+        ? `UNVERIFIED_ROLE_ID: ${urole} (auto-remove on).`
+        : `UNVERIFIED_ROLE_ID ${config.unverifiedRoleId} not found.`
+    );
+  }
+
+  // Bot permission and hierarchy for every managed role.
   const me = await guild.members.fetchMe().catch(() => null);
   if (!me) {
-    lines.push('❌ Could not fetch my own member — try again later.');
-    color = 0xed4245;
+    bad.push('❌ Could not fetch my own member.');
   } else {
-    const canManage = me.permissions.has(PermissionFlagsBits.ManageRoles);
-    lines.push(canManage ? '✅ Manage Roles permission: yes' : '❌ Manage Roles permission: missing.');
-    if (!canManage) color = 0xed4245;
-
+    mark(me.permissions.has(PermissionFlagsBits.ManageRoles), 'Manage Roles permission: yes.');
     if (role) {
-      const above = me.roles.highest.position > role.position;
-      lines.push(
-        above
-          ? `✅ Hierarchy: my top role (${me.roles.highest.name}) is above ${role.name}.`
-          : `❌ Hierarchy: move my role above ${role.name} in Server Settings → Roles.`
+      mark(
+        me.roles.highest.position > role.position,
+        `My top role (${me.roles.highest.name}) is above ${role.name}.`
       );
-      if (!above) color = 0xed4245;
     }
+    if (urole) {
+      mark(
+        me.roles.highest.position > urole.position,
+        `My top role (${me.roles.highest.name}) is above ${urole.name}.`
+      );
+    }
+  }
+
+  // Panel postable in this channel.
+  const channel = interaction.channel;
+  if (channel?.isTextBased()) {
+    const perms = channel.permissionsFor(me ?? guild.members.me);
+    mark(
+      !!perms?.has(PermissionFlagsBits.ViewChannel) &&
+        !!perms?.has(PermissionFlagsBits.SendMessages) &&
+        !!perms?.has(PermissionFlagsBits.EmbedLinks),
+      `Can post panel in ${channel}.`
+    );
+  }
+
+  const lines = [...bad, ...ok];
+  if (!config.unverifiedRoleId) {
+    lines.push('➖ UNVERIFIED_ROLE_ID: not set (auto-remove off).');
   }
 
   const embed = new EmbedBuilder()
     .setTitle('Verification Status')
     .setDescription(lines.join('\n'))
-    .setColor(color)
+    .setColor(bad.length ? 0xed4245 : 0x57f287)
     .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
 
   await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });

@@ -120,6 +120,12 @@ async function handleVerifyButton(interaction) {
     return;
   }
 
+  if (config.unverifiedRoleId && member.roles.cache.has(config.unverifiedRoleId)) {
+    await member.roles
+      .remove(config.unverifiedRoleId, 'Unverified role removed after verification')
+      .catch((err) => console.error('Failed to remove unverified role:', err.message));
+  }
+
   await interaction.reply({
     content: `You have been verified and given the **${verifiedRole.name}** role. Welcome!`,
     flags: MessageFlags.Ephemeral,
@@ -127,8 +133,7 @@ async function handleVerifyButton(interaction) {
 }
 
 function getRoleAddErrorMessage(err) {
-  // discord.js exposes status/code; map the common permission/hierarchy cases
-  // to user-friendly text without leaking internals.
+  // discord.js exposes status/code; map the common permission/hierarchy cases to user-friendly text without leaking internals error details.
   const code = err?.code ?? err?.status;
   if (code === 50013 || code === 50001) {
     return 'The bot lacks permission to assign roles. Please contact a server admin.';

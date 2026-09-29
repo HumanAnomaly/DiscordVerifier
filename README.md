@@ -17,6 +17,14 @@
 
 > **Simple / Starter** Admin runs `/verify-setup` once, users click **Verify**, bot assigns the verified role.
 
+
+
+<p align="center">
+  <img src="assets/example.png" alt="Discord Verifier verification panel" width="700">
+  <br>
+  <sub>Example of the Discord Verifier verification panel.</sub>
+</p>
+
 ## Install
 
 ```bash
@@ -34,6 +42,7 @@ npm start
 | `CLIENT_ID` | Application ID |
 | `GUILD_ID` | Server ID |
 | `VERIFIED_ROLE_ID` | Role granted on verify |
+| `UNVERIFIED_ROLE_ID` | Optional. New members get it on join, lose it on verify. Hide locked channels from this role via deny View Channel |
 
 Node 18+. Intents: `Guilds` + `GuildMembers` (privileged, enable Server Members Intent in the portal).
 
@@ -61,19 +70,20 @@ Bot role must sit above the verified role in Server Settings → Roles.
 | Command | Description |
 |---|---|
 | `/verify-setup [channel]` | Seed the verification panel here or in the target channel (Administrator-only) |
-| `/verify-status` | Health check: role, Manage Roles, hierarchy (Administrator-only) |
+| `/verify-status` | Full config + health check: IDs, roles, permission, hierarchy, channel (Administrator-only) |
 | `/verify-help` | List commands (Administrator-only) |
 
 ## How it works
 
 ```mermaid
 flowchart LR
+    J[join server] --> U[unverified role, if configured]
     A[admin: /verify-setup] --> B[embed + Verify + Source Code buttons]
     B --> C[user clicks Verify]
     C --> D{has verified role?}
     D -->|yes| E[ephemeral: already verified]
     D -->|no| F[checks: role exists, Manage Roles, hierarchy]
-    F --> G[add VERIFIED_ROLE_ID]
+    F --> G[add VERIFIED_ROLE_ID, remove unverified role]
     G --> H[ephemeral: success]
 ```
 

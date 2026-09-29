@@ -28,7 +28,9 @@ export async function execute(interaction) {
         '**/verify-status**\n' +
         'Health check: verified role, Manage Roles permission, and role hierarchy.\n\n' +
         '**/verify-help**\n' +
-        'Show this list.'
+        'Show this list.\n\n' +
+        '**Auto-remove (optional)**\n' +
+        'Set UNVERIFIED_ROLE_ID to gate channels until verify; removed automatically.'
     )
     .setColor(0x5865f2)
     .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
