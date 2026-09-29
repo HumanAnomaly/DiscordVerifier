@@ -1,0 +1,28 @@
+{
+  "name": "discordverifier",
+  "version": "1.0.0",
+  "description": "Lightweight Discord verification bot with a Verify button.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "deploy": "node src/deploy-commands.js"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "verification",
+    "bot",
+    "humananomaly"
+  ],
+  "author": "HumanAnomaly",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.5"
+  }
+}
