@@ -5,6 +5,8 @@ import {
   MessageFlags,
 } from 'discord.js';
 import { config } from '../utils/config.js';
+import { getGuildSettings } from '../utils/settings.js';
+import { getPendingCount } from '../utils/captcha.js';
 
 export const data = new SlashCommandBuilder()
   .setName('verify-status')
@@ -90,6 +92,23 @@ export async function execute(interaction) {
   if (!config.unverifiedRoleId) {
     lines.push('➖ UNVERIFIED_ROLE_ID: not set (auto-remove off).');
   }
+
+  // Runtime settings (per-guild, via commands).
+  const settings = getGuildSettings(guild.id);
+  lines.push(
+    `ℹ️ Mode: **${settings.mode}** (${settings.mode === 'v1' ? 'direct, no captcha' : 'random-button captcha'}).`
+  );
+  lines.push(
+    settings.welcomeChannelId
+      ? `ℹ️ Welcome: <#${settings.welcomeChannelId}> (goodbye ${settings.goodbyeEnabled ? 'on' : 'off'}).`
+      : 'ℹ️ Welcome: off (set via /welcome-setup).'
+  );
+  lines.push(
+    settings.logChannelId ? `ℹ️ Verify log: <#${settings.logChannelId}>.` : 'ℹ️ Verify log: off.'
+  );
+  lines.push(
+    `ℹ️ Min account age: ${settings.minAccountAgeDays}d · Cooldown: ${settings.cooldownSeconds}s · Active captchas: ${getPendingCount()}.`
+  );
 
   const embed = new EmbedBuilder()
     .setTitle('Verification Status')

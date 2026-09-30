@@ -25,8 +25,14 @@ export async function execute(interaction) {
     .setDescription(
       '**/verify-setup [channel]**\n' +
         'Seed the verification panel (embed + Verify button) in this channel or the target channel.\n\n' +
+        '**/verify-mode <v1|v2>**\n' +
+        'Switch verification version. v1 = direct (no captcha), v2 = random-button captcha in Discord.\n\n' +
+        '**/welcome-setup <channel> [enable] [goodbye]**\n' +
+        'Welcome + goodbye embeds for joins/leaves.\n\n' +
+        '**/verify-config [log-channel] [min-account-age-days] [cooldown-seconds] [disable-log]**\n' +
+        'View or change verify extras: audit log, account-age gate, anti-spam cooldown.\n\n' +
         '**/verify-status**\n' +
-        'Health check: verified role, Manage Roles permission, and role hierarchy.\n\n' +
+        'Health check: verified role, Manage Roles permission, role hierarchy, plus current mode/settings.\n\n' +
         '**/verify-help**\n' +
         'Show this list.\n\n' +
         '**Auto-remove (optional)**\n' +
