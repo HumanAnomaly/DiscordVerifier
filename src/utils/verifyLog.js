@@ -13,7 +13,7 @@ const COLORS = {
  * Append-only audit trail to the configured log channel. Fail-silent by design:
  * logging must never break verification itself.
  */
-export async function logVerifyEvent(guild, { type, user, detail }) {
+export async function logVerifyEvent(guild, { type, detail }) {
   try {
     const settings = getGuildSettings(guild.id);
     if (!settings.logChannelId) return;
@@ -23,12 +23,7 @@ export async function logVerifyEvent(guild, { type, user, detail }) {
     const embed = new EmbedBuilder()
       .setTitle(`Verify log — ${type}`)
       .setDescription(detail ?? '—')
-      .setColor(COLORS[type] ?? 0x5865f2)
-      .setFooter({ text: 'Discord Verifier by HumanAnomaly' })
-      .setTimestamp();
-    if (user) {
-      embed.setAuthor({ name: `${user.tag} (${user.id})` });
-    }
+      .setColor(COLORS[type] ?? 0x5865f2);
     await channel.send({ embeds: [embed] });
   } catch (err) {
     console.error('Failed to send verify log:', err.message);

@@ -38,8 +38,7 @@ export async function execute(interaction) {
         '**Auto-remove (optional)**\n' +
         'Set UNVERIFIED_ROLE_ID to gate channels until verify; removed automatically.'
     )
-    .setColor(0x5865f2)
-    .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
+    .setColor(0x5865f2);
 
   await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }

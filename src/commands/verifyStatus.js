@@ -113,8 +113,7 @@ export async function execute(interaction) {
   const embed = new EmbedBuilder()
     .setTitle('Verification Status')
     .setDescription(lines.join('\n'))
-    .setColor(bad.length ? 0xed4245 : 0x57f287)
-    .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
+    .setColor(bad.length ? 0xed4245 : 0x57f287);
 
   await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }

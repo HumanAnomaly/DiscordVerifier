@@ -249,8 +249,7 @@ async function handleCaptchaButton(interaction) {
       const embed = new EmbedBuilder()
         .setTitle('Verified!')
         .setDescription(result.message)
-        .setColor(0x57f287)
-        .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
+        .setColor(0x57f287);
       await interaction.update({ embeds: [embed], components: [] });
       await logVerifyEvent(guild, {
         type: 'success',
@@ -286,8 +285,7 @@ async function handleCaptchaButton(interaction) {
     .setDescription(
       `Out of attempts. Wait **${settings.cooldownSeconds}s**, then click **Verify** for a new captcha.`
     )
-    .setColor(0xed4245)
-    .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
+    .setColor(0xed4245);
   await interaction.update({ embeds: [embed], components: [] });
   await logVerifyEvent(guild, {
     type: 'captcha_fail',

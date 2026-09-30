@@ -12,8 +12,7 @@ export function buildWelcomeEmbed(member) {
     )
     .setThumbnail(user.displayAvatarURL())
     .setColor(0x57f287)
-    .setFooter({ text: `Member #${member.guild.memberCount} · Discord Verifier by HumanAnomaly` })
-    .setTimestamp();
+    .setFooter({ text: `Member #${member.guild.memberCount}` });
 }
 
 export function buildGoodbyeEmbed(guild, user) {
@@ -22,8 +21,7 @@ export function buildGoodbyeEmbed(guild, user) {
     .setDescription(`${user} left **${guild.name}**.`)
     .setThumbnail(user.displayAvatarURL())
     .setColor(0xed4245)
-    .setFooter({ text: `${guild.memberCount} members remaining · Discord Verifier` })
-    .setTimestamp();
+    .setFooter({ text: `${guild.memberCount} members remaining` });
 }
 
 async function canPost(channel, me) {

@@ -75,8 +75,7 @@ export async function execute(interaction) {
         `Min account age: **${settings.minAccountAgeDays}** day(s) (0 = off)\n` +
         `Cooldown: **${settings.cooldownSeconds}**s`
     )
-    .setColor(0x5865f2)
-    .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
+    .setColor(0x5865f2);
 
   await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }

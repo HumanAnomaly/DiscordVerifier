@@ -101,8 +101,7 @@ export function buildCaptchaMessage(prompt, options, token, attemptsLeft) {
         `Attempts left: **${attemptsLeft}** · Expires in 2 minutes.\n` +
         'Only you can press these buttons.'
     )
-    .setColor(0x5865f2)
-    .setFooter({ text: 'Discord Verifier by HumanAnomaly' });
+    .setColor(0x5865f2);
 
   const row = new ActionRowBuilder().addComponents(
     options.map((value, i) =>
